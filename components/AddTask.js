@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Add } from "react-ionicons";
 import axios from "axios";
+import Spinner from "./Spinner";
 
 const AddTask = (props) => {
+  const [loading, setLoading] = useState(false);
   const [disable, setDisable] = useState(true);
   const [input, setInput] = useState("");
 
@@ -21,10 +23,12 @@ const AddTask = (props) => {
     }
   };
   const onSubmit = () => {
+    setLoading(true);
     axios.post(`/api/tasks`, { input }).then((response) => {
       props.setData(response.data);
       setInput("");
       setDisable(true);
+      setLoading(false);
     });
   };
 
@@ -45,7 +49,9 @@ const AddTask = (props) => {
           disabled={disable}
           className="p-[14px] rounded-md disabled:bg-gray-600 bg-blue-500 outline-none flex items-center gap-2 disabled:cursor-not-allowed cursor-pointer"
         >
-          {disable ? (
+          {loading ? (
+            <Spinner />
+          ) : disable ? (
             <Add color={"#d1cfc0"} width="25px" height="25px" />
           ) : (
             <Add color={"#fff"} width="25px" height="25px" />
